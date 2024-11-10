@@ -1,5 +1,6 @@
 
 #include <iostream>
+#include <stack>
 struct Node {
   int data;
   Node * next;
@@ -35,6 +36,7 @@ void deleteList( Node * & head ) {
  * @param head - Current head of the list.
  */
 void printList( Node * head ) {
+  std::cout << "List: ";
   while(head) {
     std::cout << head->data << "-->";
     head = head->next;
@@ -91,20 +93,101 @@ void deleteMiddle(Node *head)
 
 }
 
+// swap the nodes of the list from position left to position right, and return the reversed list.
+Node* swapBetween(Node* head, int left, int right) {
+
+    // left < right, left >=1, right <= length of list.
+
+    auto getNode = [head](int pos){
+        auto left_temp = head;
+        while (pos > 0)
+        {
+            // left_pri = left_temp;
+            left_temp = left_temp->next;
+            pos--;
+        }
+        return left_temp;
+    };
+
+    // Get left-1, right-1.
+    // 2 temps to left and right.
+    // left-1's next ->  right temp
+    // right-1's next -> left temp
+    auto left_pri = getNode(left-1);
+    Node *left_temp = left_pri->next;
+
+    auto right_pri = getNode(right - 1);
+    auto right_temp = right_pri->next;
+
+    left_pri->next = right_temp;
+    right_pri->next = left_temp;
+
+    auto left_copy = left_temp->next;
+    left_temp->next = right_temp->next;
+    right_temp->next = left_copy;
+
+    return head;
+}
+
+// in-place modification.
+// One pass
+// Using stack (first in last out)
+// FIXME
+Node* reverseBetween(Node* head, int left, int right) {
+
+    auto getNode = [head](int pos){
+        auto left_temp = head;
+        while (--pos > 0)
+        {
+            // left_pri = left_temp;
+            left_temp = left_temp->next;
+        }
+        return left_temp;
+    };
+
+    auto left_pri = getNode(left-1);
+    auto left_n = left_pri->next;
+
+    auto temp = left_n;
+    std::stack<Node*> lifo;
+    for (size_t i = 0; i < right - left + 1; i++)
+    {
+        lifo.push(temp);
+        temp = temp->next;
+    }
+    auto r_next = temp; // record next after the reverse range.
+
+    while (!lifo.empty())
+    {
+        temp = lifo.top();
+        left_pri->next = temp;
+        left_pri = temp;
+        lifo.pop();
+    }
+    left_pri->next = r_next;
+
+    return head;
+}
+
 int main(int argc, char const *argv[])
 {
-    {
-    Node * head = nullptr;
-    for (int i = 7; i > 0; i--) {
-      insert(head, i);
-    }
-    std::cout << "List: ";
-    printList(head);
+    auto creteList8 = [](){
+        Node * head = nullptr;
+        for (int i = 7; i > 0; i--) {
+            insert(head, i);
+        }
+        return head;
+    };
 
-    auto i = 4;
-    std::cout << i << "th node from last (Recursive) : ";
-    Node *n = lastKthNode(head, i);
-    std::cout << "node:"<< n->data  << std::endl;
+    {
+        auto head = creteList8();
+        std::cout << "List: ";
+        printList(head);
+
+        auto i = 4;
+        std::cout << i << "th node from last (Recursive) : ";
+        Node *n = lastKthNode(head, i);
+        std::cout << "node:"<< n->data  << std::endl;
     }
 
     {
@@ -116,8 +199,17 @@ int main(int argc, char const *argv[])
         printList(head);
 
         deleteMiddle(head);
-        std::cout << "Delete middle:" << std::endl;
+        std::cout << "Delete middle 2:" << std::endl;
         printList(head);
+    }
+
+    {
+        auto head = creteList8();
+        // std::cout << "swap between" << std::endl;
+        // auto head_new = swapBetween(head, 1, 5);
+        auto head_new  = reverseBetween(head, 2, 6);
+        std::cout << "1,6...2,7" << std::endl;
+        printList(head_new);
     }
 
 
