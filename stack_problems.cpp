@@ -2,6 +2,7 @@
 
 #include <iostream>
 #include <stack>
+#include <utility>
 #include <vector>
 
 using namespace std;
@@ -36,6 +37,33 @@ vector<int> GreaterElement(vector<int> &nums1) {
 
 // }
 
+vector<int> dailyTemperatures(vector<int> &temperatures) {
+    stack<pair<int, int>> lifo;  // <temperature, i-th day>.
+    lifo.push(make_pair(0, 0));
+
+    vector<int> ret(temperatures.size(), 0);
+
+    for (int i = temperatures.size() - 1; i >= 0; i--)
+    {
+        while (lifo.top().first != 0 && temperatures[i] > lifo.top().first) {
+            lifo.pop();
+        }
+        if (lifo.top().second - i < 0)
+        {
+            ret[i] = 0;
+        }
+        else
+        {
+            ret[i] =  lifo.top().second - i;
+        }
+
+        lifo.push(make_pair(temperatures[i], i));
+
+    }
+
+    return ret;
+}
+
 int main(int argc, const char **argv) {
 
     auto printVec = [](vector<int> v) {
@@ -54,6 +82,12 @@ int main(int argc, const char **argv) {
         std::cout << i << ":  ";
     }
     cout << std::endl;
+
+    vector<int> v2 = {73,74,75,71,69,72,76,73};
+    auto v2_ret = dailyTemperatures(v2);
+    std::cout << "daily temp: " << std::endl;
+    printVec(v2_ret);
+
 
     return 0;
 }
