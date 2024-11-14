@@ -1,3 +1,4 @@
+#include <cmath>
 #include <iostream>
 #include <map>
 #include <queue>
@@ -45,6 +46,31 @@ vector<int> topKFrequent(vector<int> &nums, int k) {
     return res;
 }
 
+vector<vector<int>> kClosest(vector<vector<int>>& points, int k) {
+    // using heap
+    vector<vector<int>> res;
+
+    auto dist_comp = [](vector<int> &p1, vector<int> &p2){
+        return (sqrt(pow(p1[0], 2) + pow(p1[1], 2)) > sqrt(pow(p2[0], 2) + pow(p2[1], 2))) ? true : false;
+    };
+
+    priority_queue<vector<int>, vector<vector<int>>, decltype(dist_comp)> h(dist_comp);
+
+    for (auto &i : points)
+    {
+        h.push(i);
+    }
+
+    while (k-- > 0 && !h.empty())
+    {
+        res.push_back(h.top());
+        h.pop();
+    }
+
+
+    return res;
+}
+
 int main(int argc, const char **argv) {
 
     auto printVec = [](vector<int> v) {
@@ -58,6 +84,13 @@ int main(int argc, const char **argv) {
     auto k = 2;
     auto t_res = topKFrequent(t, k);
     printVec(t_res);
+
+    std::cout << "K closet points" << std::endl;
+    vector<vector<int>> t1 = {{1,3}, {-2, 2}};
+    k = 1;
+    auto t1_res = kClosest(t1, k);
+    printVec(t1_res[0]);
+
 
     return 0;
 }
