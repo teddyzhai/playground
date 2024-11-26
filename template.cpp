@@ -6,7 +6,10 @@
 #include <memory>
 #include <cstring>
 #include <mutex>
+#include <string>
 #include <thread>
+#include <type_traits>
+#include <vector>
 
 using namespace std;
 
@@ -87,6 +90,68 @@ private:
 
 };
 
+/// Learn static polymorphism (using enable_if)
+// chatgpt
+// Enable for integral types
+template <typename T>
+typename std::enable_if<std::is_integral<T>::value, void>::type
+print(T value) {
+    std::cout << "static poly Integral value: " << value << std::endl;
+}
+
+// Enable for floating-point types
+template <typename T>
+typename std::enable_if<std::is_floating_point<T>::value, void>::type
+print(T value) {
+    std::cout << "static poly  Floating-point value: " << value << std::endl;
+}
+
+// Type traits for container
+template<typename T>
+struct is_type_container : false_type {};
+template<typename T>
+struct is_type_container<vector<T>> : true_type {};
+
+// enable for container type
+template <typename T>
+typename std::enable_if<is_type_container<T>::value, void>::type
+print(T value)
+{
+    for (auto &i : value)
+    {
+        std::cout << "... " << i << std::endl;
+    }
+}
+
+// enable for user type
+class House
+{
+public:
+    House() = default;
+    House(House &&) = default;
+    House(const House &) = default;
+    House &operator=(House &&) = default;
+    House &operator=(const House &) = default;
+    ~House() = default;
+
+    string name_;
+};
+
+template<typename T>
+struct is_type_house : false_type {};
+
+template<>
+struct is_type_house<House> : true_type {};
+template <typename T>
+typename std::enable_if<is_type_house<T>::value, void>::type
+print(T value)
+{
+    // for (auto &i : value)
+    // {
+    std::cout << "House: " << value.name_ << std::endl;
+    // }
+}
+
 int main(void)
 {
 
@@ -106,6 +171,15 @@ int main(void)
     // OK if without -Wpedantic
     a.setAlert(1, {.a=10,  .b=20});
     a.clearAlert(2);
+
+    print(42);        // Matches the integral overload
+    print(3.14);      // Matches the floating-point overload
+    vector<int> v = {1,2,3};
+    print(v);
+
+    House house;
+    house.name_ = string("name");
+    print(house);
 
     return 0;
 }
