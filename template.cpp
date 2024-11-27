@@ -142,14 +142,38 @@ struct is_type_house : false_type {};
 
 template<>
 struct is_type_house<House> : true_type {};
-template <typename T>
-typename std::enable_if<is_type_house<T>::value, void>::type
-print(T value)
+
+// prior to C++17
+// template <typename T>
+// typename std::enable_if<is_type_house<T>::value, void>::type
+// print(T value)
+// {
+//     // for (auto &i : value)
+//     // {
+//     std::cout << "House: " << value.name_ << std::endl;
+//     // }
+// }
+
+
+/// c++17 style
+// enable_if_t
+
+// alternative way of using if constexpr
+
+// for integer
+template<typename T, enable_if_t<is_integral_v<T>, bool> = true>
+void print17(T value)
 {
-    // for (auto &i : value)
-    // {
-    std::cout << "House: " << value.name_ << std::endl;
-    // }
+    std::cout << "17 Integer: " << value << std::endl;
+}
+
+template<typename T>
+constexpr bool is_type_house_v = is_type_house<T>::value;
+
+template<typename T, enable_if_t<is_type_house_v<T>, bool> = true>
+void print17(T value)
+{
+    std::cout << "17 house: " << value.name_ << std::endl;
 }
 
 int main(void)
@@ -179,7 +203,10 @@ int main(void)
 
     House house;
     house.name_ = string("name");
-    print(house);
+    // print(house);
+
+    print17(10);
+    print17(house);
 
     return 0;
 }
