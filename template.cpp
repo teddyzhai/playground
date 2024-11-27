@@ -176,6 +176,21 @@ void print17(T value)
     std::cout << "17 house: " << value.name_ << std::endl;
 }
 
+/// c++17 syntax: if constexpr
+template<typename T>
+void print17_ifconstexpr(T value)
+{
+    if constexpr (std::is_integral_v<T>) {
+        std::cout << "Integral value 17: " << value << std::endl;
+    } else if constexpr (std::is_floating_point_v<T>) {
+        std::cout << "Floating-point value 17: " << value << std::endl;
+    }
+    else if constexpr (is_type_house_v<T>) {
+        std::cout << "House if constexpr: " << value.name_ << std::endl;
+    }
+}
+
+
 int main(void)
 {
 
@@ -207,6 +222,8 @@ int main(void)
 
     print17(10);
     print17(house);
+
+    print17_ifconstexpr(house);
 
     return 0;
 }
