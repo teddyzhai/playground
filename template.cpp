@@ -190,6 +190,37 @@ void print17_ifconstexpr(T value)
     }
 }
 
+// Use CRTP to replace inheritance
+// CRTP Base class
+template <typename Derived>
+class Shape {
+public:
+    void draw() const {
+        static_cast<const Derived*>(this)->drawImpl();
+    }
+};
+
+// Circle class
+class Circle : public Shape<Circle> {
+public:
+    void drawImpl() const {
+        std::cout << "Static polymorphism  Drawing a circle." << std::endl;
+    }
+};
+
+// Square class
+class Square : public Shape<Square> {
+public:
+    void drawImpl() const {
+        std::cout << "Static polymorphism  Drawing a square." << std::endl;
+    }
+};
+
+// Rendering function
+template <typename T>
+void render(const Shape<T>& shape) {
+    shape.draw();
+}
 
 int main(void)
 {
@@ -224,6 +255,12 @@ int main(void)
     print17(house);
 
     print17_ifconstexpr(house);
+
+
+    Circle c;
+    Square s;
+    render(c); // Static polymorphism
+    render(s);
 
     return 0;
 }
