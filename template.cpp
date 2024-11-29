@@ -222,6 +222,29 @@ void render(const Shape<T>& shape) {
     shape.draw();
 }
 
+/// A composite obj contains a templated type.
+template<typename T, typename T2>
+class CompObj
+{
+public:
+    // 1. Pass templated obj.
+    // 2. In constructor,
+    // CompObj(const Shape<T> *s) : s_(s) {};
+    CompObj() = default;
+    CompObj(CompObj &&) = default;
+    CompObj(const CompObj &) = default;
+    CompObj &operator=(CompObj &&) = default;
+    CompObj &operator=(const CompObj &) = default;
+    ~CompObj() = default;
+
+    Shape<T> s_;
+    Shape<T2> s2_;
+
+
+private:
+
+};
+
 int main(void)
 {
 
@@ -261,6 +284,11 @@ int main(void)
     Square s;
     render(c); // Static polymorphism
     render(s);
+
+    std::cout << "Constructin a comp obj:" << std::endl;
+    CompObj<Circle, Square> compCircle;
+    compCircle.s_.draw();
+    compCircle.s2_.draw();
 
     return 0;
 }
