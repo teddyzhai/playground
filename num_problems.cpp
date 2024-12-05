@@ -177,6 +177,43 @@ vector<int> smallestSubarrayWithKDistinct2(vector<int> &arr, int k)
     return sub_arr;;
 }
 
+// https://www.naukri.com/code360/problems/house-robber_839733?topList=top-uber-coding-interview-questions&problemListRedirection=true&company%5B%5D=Uber&difficulty%5B%5D=Medium&sort_entity=reactions_count&sort_order=DESC
+long long int houseRobber(vector<int>& valueInHouse)
+{
+    // num cannot be in the adjacent elements.
+    // size-1 adjacent to 0.
+
+    // odd index sum
+    // even index sum
+    // take care of the last element.
+
+    // Log(N)
+    auto isLastEven = ((valueInHouse.size()-1 % 2) == 0) ? true : false;
+
+    auto odd_sum = 0;
+    auto odd_min = 0;
+    auto even_sum = 0;
+    auto even_min = 0;
+    for (size_t i = 0; i < valueInHouse.size(); i++)
+    {
+        if (i%2 == 0)
+        {
+            even_sum+= valueInHouse[i];
+            even_min = (valueInHouse[i]<even_min) ? valueInHouse[i] : even_min;
+        }
+        else
+        {
+            odd_sum += valueInHouse[i];
+        }
+    }
+
+    if (isLastEven)
+    {
+        even_sum -= even_min;
+    }
+
+    return (even_sum > odd_sum)? even_sum : odd_sum;
+}
 
 int main(int argc, const char** argv){
 
@@ -192,6 +229,10 @@ int main(int argc, const char** argv){
     printVec(v3_res, "smallest subarray");
     auto v3_res2 = smallestSubarrayWithKDistinct(v3, 2);
     printVec(v3_res2, "smallest subarray2");
+
+    vector<int> v4 = {2,7,9,3};
+    std::cout << "house robber: " << houseRobber(v4) << std::endl;
+
 
 
     return 0;
