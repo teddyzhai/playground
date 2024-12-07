@@ -1,6 +1,10 @@
 
 #include <algorithm>
+#include <functional>
+#include <queue>
+#include <set>
 #include <unordered_map>
+#include <utility>
 #include <vector>
 #include "vechelper.hpp"
 using namespace std;
@@ -215,6 +219,148 @@ long long int houseRobber(vector<int>& valueInHouse)
     return (even_sum > odd_sum)? even_sum : odd_sum;
 }
 
+// int minMoveNextGreater(vector<int> nums, int k)
+// {
+
+// }
+
+// int lengthOfLongestConsecutiveSequence(vector<int> &arr, int n) {
+//     // slow, fast pointer
+
+//     auto ret = 0;
+//     auto i = 0;
+//     auto j = i + 1;
+//     while (j < arr.size()-1)
+//     {
+//         if (j-i == arr[j]-arr[i])
+//         {
+//             // move j
+//             j++;
+//         }
+//         else if (j - i < arr[j]-arr[i]) {
+//             i++;
+//         }
+//     }
+
+//     return ret;
+// }
+
+int getTotalIslands(int **arr, int n, int m)
+{
+    int ret = 0;
+    // iterate: find 1,
+    // search neighbor 1s. using bfs
+    // Yes:
+    //      already in visited?
+    //        Yes:
+    //        No: put in visited
+
+    set<pair<int, int>> visited;
+
+    auto construct_n = [](pair<int, int> &p, int n, int m){
+        vector<pair<int, int>> res;
+        auto i = p.first;
+        if (p.first>0 && p.first<n)
+        {
+            res.emplace_back(make_pair(p.first-1, p.second));
+            res.emplace_back(make_pair(p.first+1, p.second));
+        }
+        auto j = p.second;
+        if (j>0 && j<m)
+        {
+            res.emplace_back(make_pair(p.first, p.second-1));
+            res.emplace_back(make_pair(p.first, p.second+1));
+        }
+
+        if (i == 0 && j> 0)
+        {
+            res.emplace_back(make_pair(p.first, p.second-1));
+        }
+        if (i == 0 && j<m)
+        {
+            res.emplace_back(make_pair(p.first, p.second+1));
+        }
+
+        if (j == 0 && i>0)
+        {
+            res.emplace_back(make_pair(p.first-1, p.second));
+        }
+        if (j == 0 && i<m)
+        {
+            res.emplace_back(make_pair(p.first+1, p.second));
+        }
+
+        // diagonal
+        if (i > 0 && j > 0)
+        {
+            res.emplace_back(make_pair(p.first-1, p.second-1));
+        }
+        if (i < n && j < m)
+        {
+            res.emplace_back(make_pair(p.first+1, p.second+1));
+        }
+
+        if (i > 0 && j < m)
+        {
+            res.emplace_back(make_pair(p.first-1, p.second+1));
+        }
+
+        if (i < n && j > 0)
+        {
+            res.emplace_back(make_pair(p.first+1, p.second-1));
+        }
+
+        return res;
+    };
+
+    function<void(pair<int, int>)> neighbor_bfs = [&](pair<int, int> p){
+        queue<pair<int, int>> bfs;
+        bfs.push(p);
+
+        auto n_vec = construct_n(p, n, m);
+
+        while (!bfs.empty())
+        {
+            auto qn = bfs.front();
+            bfs.pop();
+
+            if (visited.find(qn) == visited.end())
+            {
+                visited.insert(qn);
+
+                if (arr[p.first][p.second] == 1)
+                {
+                    ret++;
+                }
+            }
+            else
+            {
+                continue;
+            }
+
+            for(auto &np : n_vec)
+            {
+                neighbor_bfs(np);
+            }
+
+        }
+    };
+
+    for (size_t i = 0; i < n; i++)
+    {
+        for (size_t j = 0; j < m; j++)
+        {
+            if (arr[i][j] == 0)
+            {
+                continue;
+            }
+            neighbor_bfs(make_pair(i, j));
+        }
+    }
+
+    return ret;
+}
+
 int main(int argc, const char** argv){
 
     vector<int> v1 = {1, 2, 3};
@@ -234,6 +380,10 @@ int main(int argc, const char** argv){
     std::cout << "house robber: " << houseRobber(v4) << std::endl;
 
 
+
+    // auto v5 = construct_n(make_pair(1, 1), 5, 5);
+
+    // printVec(v5, "construct neighbor");
 
     return 0;
 }
