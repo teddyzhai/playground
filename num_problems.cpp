@@ -245,7 +245,7 @@ long long int houseRobber(vector<int>& valueInHouse)
 //     return ret;
 // }
 
-int getTotalIslands(int **arr, int n, int m)
+int getTotalIslands(int arr[][5], int n, int m)
 {
     int ret = 0;
     // iterate: find 1,
@@ -361,6 +361,65 @@ int getTotalIslands(int **arr, int n, int m)
     return ret;
 }
 
+// vector<vector<int>> combinationSum2(vector<int> &arr, int n, int target){
+// 	// Write your code here.
+// }
+
+// https://leetcode.com/problems/is-graph-bipartite/description/
+bool isBipartite(vector<vector<int>>& graph) {
+
+    auto ret = false;
+
+    set<int> s1; // node id
+    set<int> s2; // node id
+    vector<set<int>> colors;
+    colors.push_back(s1);
+    colors.push_back(s2);
+
+    set<int> visited;
+
+    function<bool(int, vector<int>&)> dfs = [&](int color_set, vector<int> &nn)
+    {
+
+        for(auto &j : nn)
+        {
+            if (visited.find(j) != visited.end())
+            {
+                // neighbors cannot have the same color.
+                if (colors[color_set].find(j) != colors[color_set].end())
+                {
+                    return false;
+                }
+            }
+            else
+            {
+                visited.insert(j);
+                return dfs(1-color_set, graph[j]);
+            }
+        }
+
+        return true;
+    };
+
+    // iterate nodes.
+    for (size_t i = 0; i < graph.size(); i++)
+    {
+        // not visited yet.
+        if (visited.find(i) == visited.end())
+        {
+            visited.insert(i);
+            colors[0].insert(i);
+            // dfs: set 1, neighbor nodes.
+            if (!dfs(0, graph[i]))
+            {
+                return false;
+            }
+        }
+    }
+
+    return true;
+}
+
 int main(int argc, const char** argv){
 
     vector<int> v1 = {1, 2, 3};
@@ -379,11 +438,18 @@ int main(int argc, const char** argv){
     vector<int> v4 = {2,7,9,3};
     std::cout << "house robber: " << houseRobber(v4) << std::endl;
 
+    // int tarr[4][5] = {{0, 1, 1, 0, 0},
+    //                 {1, 0, 0, 1, 0},
+    //                 {0, 0, 1, 0, 0},
+    //                 {1, 0, 0, 0, 1}};
+    // int res_tarr = getTotalIslands(tarr, 4, 5);
 
-
-    // auto v5 = construct_n(make_pair(1, 1), 5, 5);
-
-    // printVec(v5, "construct neighbor");
+    vector<vector<int>> g = {
+        {1,2,3},
+        {0,2,},
+        {0,1,3},
+        {0,2}};
+    std::cout << "isBipartite? " << isBipartite(g) << std::endl;
 
     return 0;
 }
