@@ -1,10 +1,18 @@
 
 
+#include <algorithm>
 #include <cstdint>
 #include <cstring>
+#include <functional>
 #include <iostream>
+#include <map>
+#include <queue>
 #include <string>
 #include <sys/types.h>
+#include <utility>
+#include <vector>
+
+using namespace std;
 
 // O(N)
 bool uniqueChar(std::string str)
@@ -76,6 +84,50 @@ bool isPermutationStr(std::string &str1, std::string &str2)
     return true;
 }
 
+// https://leetcode.com/problems/sort-characters-by-frequency/description/
+string frequencySort(string s) {
+    string ret;
+    // map<char, int> occ_map;
+
+    // // pair <char, int>
+    // using char_occ_t = pair<char, int>;
+    // vector<char_occ_t> char_occs;
+
+    vector<int> occ_vec(256, 0);
+    for (size_t i = 0; i < s.length(); i++)
+    {
+        occ_vec[(int)s[i]]++;
+    }
+
+    using occ_t = pair<int, int>;
+    auto cmp = [](occ_t &p1, occ_t &p2){
+        return (p2.second > p1.second);
+    };
+    priority_queue<pair<int, int>, vector<occ_t>, decltype(cmp)> pq(cmp);
+    for (size_t i = 0; i < occ_vec.size(); i++)
+    {
+        if (occ_vec[i] == 0)
+        {
+            continue;
+        }
+        pq.push(make_pair(i, occ_vec[i]));
+    }
+
+    while (!pq.empty()) {
+        auto p = pq.top();
+        if (p.second == 0)
+        {
+            // end
+            break;
+        }
+        string temp(p.second, p.first);
+        ret.append(temp);
+        pq.pop();
+    }
+
+    return ret;
+}
+
 int main(int argc, const char** argv) {
 
     std::string word1("copyrightable");
@@ -101,6 +153,9 @@ int main(int argc, const char** argv) {
     if (isPermutationStr(str3p, str4p) == false) {
         std::cout << "Right for not permutation" << std::endl;
     }
+
+    string str5("tree");
+    std::cout << "frequencySort:" << frequencySort(str5) << std::endl;
 
 
     return 0;
