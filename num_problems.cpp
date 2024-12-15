@@ -361,10 +361,6 @@ int getTotalIslands(int arr[][5], int n, int m)
     return ret;
 }
 
-// vector<vector<int>> combinationSum2(vector<int> &arr, int n, int target){
-// 	// Write your code here.
-// }
-
 // https://leetcode.com/problems/is-graph-bipartite/description/
 bool isBipartite(vector<vector<int>>& graph) {
 
@@ -420,36 +416,110 @@ bool isBipartite(vector<vector<int>>& graph) {
     return true;
 }
 
+// vector<vector<int>> combinationSum(vector<int>& candidates, int target) {
+
+// }
+
+int maxLengthChain(vector<pair<int, int>> &p, int n) {
+    // backtracking?
+    // using pint_t = pair<int, int>;
+    // set<pair<int, int>> visited;
+    auto max_len = 0;
+
+    // function<void(pint_t&)> backtracking = [&](pint_t &pp){
+    //     if (visited.size() == p.size())
+    //     {
+    //         // end
+    //         return ;
+    //     }
+
+    //     for (size_t i = 0; i < p.size(); i++)
+    //     {
+    //         if (visited.find(p[i]) != visited.end())
+    //         {
+    //             continue;
+    //         }
+    //         if (pp.second == p[i].first)
+    //         {
+    //             visited.insert(p[i]);
+    //             max_len++;
+    //             backtracking(p[i]);
+    //         }
+    //     }
+    // };
+
+    sort(p.begin(), p.end());
+    // double pointer
+    auto i = 0;
+    auto j = i+1;
+    auto len = 0;
+    while (j < p.size())
+    {
+        if (p[j].first == p[i].second)
+        {
+            // found
+            len++;
+            if (len > max_len)
+            {
+                max_len = len;
+            }
+            j++;
+        }
+        else
+        {
+            i++;
+            j=i+1;
+            len=0;
+        }
+    }
+
+
+
+    return max_len;
+}
+
 int main(int argc, const char** argv){
 
-    vector<int> v1 = {1, 2, 3};
-    auto res = nextPermutation(v1, 3);
-    printVec(res, "next permu");
+    {
+        vector<int> v1 = {1, 2, 3};
+        auto res = nextPermutation(v1, 3);
+        printVec(res, "next permu");
 
-    vector<int> v2 = {2, 3, 1, 5, 4};
-    printVec(nextPermutation(v2, 5), "next permu 2");
+        vector<int> v2 = {2, 3, 1, 5, 4};
+        printVec(nextPermutation(v2, 5), "next permu 2");
 
-    vector<int> v3 = {1, 2, 2, 3, 1, 3};
-    auto v3_res = smallestSubarrayWithKDistinct(v3, 3);
-    printVec(v3_res, "smallest subarray");
-    auto v3_res2 = smallestSubarrayWithKDistinct(v3, 2);
-    printVec(v3_res2, "smallest subarray2");
+        vector<int> v3 = {1, 2, 2, 3, 1, 3};
+        auto v3_res = smallestSubarrayWithKDistinct(v3, 3);
+        printVec(v3_res, "smallest subarray");
+        auto v3_res2 = smallestSubarrayWithKDistinct(v3, 2);
+        printVec(v3_res2, "smallest subarray2");
 
-    vector<int> v4 = {2,7,9,3};
-    std::cout << "house robber: " << houseRobber(v4) << std::endl;
+        vector<int> v4 = {2,7,9,3};
+        std::cout << "house robber: " << houseRobber(v4) << std::endl;
 
-    // int tarr[4][5] = {{0, 1, 1, 0, 0},
-    //                 {1, 0, 0, 1, 0},
-    //                 {0, 0, 1, 0, 0},
-    //                 {1, 0, 0, 0, 1}};
-    // int res_tarr = getTotalIslands(tarr, 4, 5);
+        // int tarr[4][5] = {{0, 1, 1, 0, 0},
+        //                 {1, 0, 0, 1, 0},
+        //                 {0, 0, 1, 0, 0},
+        //                 {1, 0, 0, 0, 1}};
+        // int res_tarr = getTotalIslands(tarr, 4, 5);
 
-    vector<vector<int>> g = {
-        {1,2,3},
-        {0,2,},
-        {0,1,3},
-        {0,2}};
-    std::cout << "isBipartite? " << isBipartite(g) << std::endl;
+        vector<vector<int>> g = {
+            {1,2,3},
+            {0,2,},
+            {0,1,3},
+            {0,2}};
+        std::cout << "isBipartite? " << isBipartite(g) << std::endl;
+
+    }
+
+    {
+        pair<int, int> v1 = {3,4};
+        pair<int, int> v2 = {1,2};
+        pair<int, int> v3 = {2,3};
+        vector<pair<int, int>> c = {v1, v2, v3};
+        std::cout << "max len chain: "<< maxLengthChain(c, 3) << std::endl;
+    }
+
 
     return 0;
 }
