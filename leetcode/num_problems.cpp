@@ -1,6 +1,7 @@
 
 #include <algorithm>
 #include <functional>
+#include <numeric>
 #include <queue>
 #include <set>
 #include <unordered_map>
@@ -478,6 +479,59 @@ int maxLengthChain(vector<pair<int, int>> &p, int n) {
     return max_len;
 }
 
+int maxSubarraySumNormal(vector<int> &arr)
+{
+    auto res = 0;
+    auto total = 0;
+    for (size_t i = 0; i < arr.size(); i++)
+    {
+        if (total)
+        {
+
+        }
+        total += arr[i];
+        res = max(total, res);
+    }
+
+    return res;
+}
+
+// int maxSubarraySum(vector<int> &arr) {
+// 	// sliding window
+
+//     auto i = 0;
+//     auto j = i+1;
+//     auto max = 0;
+
+//     while (j < arr.size())
+//     {
+//         if (arr[i] < 0 || arr[j] < 0)
+//         {
+//             i++;
+//             j++;
+//             continue;
+//         }
+
+//         auto sub_sum = accumulate(arr.begin()+i, arr.begin()+j, 0);
+//         max = (sub_sum>max) ? sub_sum : max;
+//         j++;
+
+//         if (arr[j] > 0)
+//         {
+
+//         }
+//         else
+//         {
+//             i = j+1;
+
+//         }
+
+
+//     }
+
+//     return max;
+// }
+
 int main(int argc, const char** argv){
 
     {
@@ -518,6 +572,11 @@ int main(int argc, const char** argv){
         pair<int, int> v3 = {2,3};
         vector<pair<int, int>> c = {v1, v2, v3};
         std::cout << "max len chain: "<< maxLengthChain(c, 3) << std::endl;
+    }
+
+    {
+        vector<int> v1 = {-2,1,-3,4,-1,2,1,-5,4};
+        std::cout << "max sub array sum: " << maxSubarraySumNormal(v1) << std::endl;
     }
 
 

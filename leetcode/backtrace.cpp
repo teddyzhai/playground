@@ -1,7 +1,10 @@
 
 
 
+#include <algorithm>
 #include <functional>
+#include <numeric>
+#include <set>
 #include <vector>
 #include "vechelper.hpp"
 using namespace std;
@@ -92,6 +95,65 @@ vector<vector<int>> permute(vector<int>& nums) {
     return res;
 }
 
+// https://leetcode.com/problems/combination-sum/
+vector<vector<int>> combinationSum(vector<int>& candidates, int target) {
+
+    vector<vector<int>> res;
+    vector<int> combi;  // intermediate sub-choice and result.
+    // vector<bool> visited(candidates.size(), false);
+
+
+    // I think we need to sort the input ?
+    sort(candidates.begin(), candidates.end());
+
+    // combi: current sub-choice. Shall not be set, because an element can be used multiple times.
+    // current total: can be derived from combi.
+    function<void(int, int)> backtrack = [&](int idx, int total)
+    {
+        // it must iterate itself
+        // for (size_t i = 0; i < candidates.size(); i++)
+        // {
+            // auto current = accumulate(combi.begin(), combi.end(), 0);
+            if (total == target)
+            {
+                // found
+                vector<int> temp(combi.begin(), combi.end());
+                // how to avoid copy?
+                res.emplace_back(temp);
+                return ;
+            }
+
+            if (total > target)
+            {
+                return; // move to the next
+            }
+
+            // if (visited[i])
+            // {
+            //     continue; ;
+            // }
+
+            // combi.insert(candidates[i]);
+            // combi.push_back(candidates[i]);
+            combi.push_back(candidates[idx]);
+            // visited[i] = true;
+            backtrack(idx, total + candidates[idx]);
+
+            combi.pop_back();
+            // combi.push_back(candidates[idx+1]);
+            backtrack(idx+1, total+candidates[idx+1]);
+            // visited[i] = false;
+        // }
+    };
+
+    backtrack(0, 0);
+
+    return res;
+}
+
+// vector<vector<int>> combinationSum(vector<int>& candidates, int target) {
+// }
+
 int main(int argc, const char** argv) {
     vector<int> v1 = {1,2,3};
     Solution s;
@@ -100,6 +162,11 @@ int main(int argc, const char** argv) {
 
     auto res_my = permute(v1);
     printVec(res_my, "my permutation");
+
+    vector<int> v2 ={2,3,6,7};
+    auto target = 7;
+    auto res2 = combinationSum(v2, target);
+    printVec(res2, "comb sum");
 
     return 0;
 }
