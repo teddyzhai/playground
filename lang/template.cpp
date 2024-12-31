@@ -90,6 +90,67 @@ private:
 
 };
 
+template<typename AlertType, typename AlertData>
+class Alert
+{
+public:
+    Alert() = default;
+    ~Alert() = default;
+
+    void setAlert(AlertType, const AlertData alertData);
+    void clearAlert(AlertType);
+
+private:
+
+};
+
+// for type1
+template <>
+void Alert<int, int>::setAlert(int, const int alertData)
+{
+    std::cout << "set for int type" << std::endl;
+}
+
+// for type2
+template <>
+void Alert<string, string>::setAlert(string, const string alertData)
+{
+    std::cout << "set for string type" << std::endl;
+}
+
+class AlertModule
+{
+private:
+    /* data */
+public:
+    AlertModule(/* args */) {}
+    ~AlertModule() {}
+
+    Alert<int, int> a1_;
+    Alert<string, string> a2_;
+    // ... a list of alert a module has.
+};
+
+class AppModule
+{
+private:
+    /* data */
+    // const Alert *a_;
+    AlertModule am_;
+public:
+    constexpr AppModule(/* args */) {}
+    ~AppModule() {}
+
+    void useAlert()
+    {
+        std::cout << "Using int type" << std::endl;
+        am_.a1_.setAlert(42, 1);
+        std::cout << "Using string type" << std::endl;
+        am_.a2_.setAlert("42", "1");
+    }
+};
+
+
 /// Learn static polymorphism (using enable_if)
 // chatgpt
 // Enable for integral types
@@ -289,6 +350,11 @@ int main(void)
     CompObj<Circle, Square> compCircle;
     compCircle.s_.draw();
     compCircle.s2_.draw();
+
+    std::cout << "Testing appModule with alertModule" << std::endl;
+    AppModule app;
+    app.useAlert();
+
 
     return 0;
 }
