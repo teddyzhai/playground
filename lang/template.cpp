@@ -150,6 +150,26 @@ public:
     }
 };
 
+//
+// ! Specialization in different namespace wont work.
+// namespace A {
+//     template <typename T>
+//     struct MyTemplate {
+//         static void print() {
+//             std::cout << "Primary template\n";
+//         }
+//     };
+// }
+
+// namespace B {
+//     // Explicit specialization for int
+//     template <>
+//     struct A::MyTemplate<int> {
+//         static void print() {
+//             std::cout << "Specialized template for int\n";
+//         }
+//     };
+// }
 
 /// Learn static polymorphism (using enable_if)
 // chatgpt
